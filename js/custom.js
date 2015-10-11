@@ -110,10 +110,24 @@ Drupal.theme.prototype.obavestenjaBlock=function(){
     });
 }
 
+Drupal.theme.prototype.breadcrumbEdit=function(){
+    if($('.breadcrumb').length>0){
+       $('.breadcrumb li:not(.first)').each(function(i,el){
+          if($(el).children('a').length>0 && $(el).children('a').attr('href')=='/' ){
+            var tmpElement=$(el).children('a');
+            var tmpText=tmpElement.contents().unwrap();
+            $(el).text(tmpText.text());
+          }
+       });
+    }
+
+}
+
 $(document).ready(function(){
    Drupal.theme('locationMap');
    Drupal.theme('searchForm');    
-   Drupal.theme('obavestenjaBlock');    
+   Drupal.theme('obavestenjaBlock');
+    Drupal.theme('breadcrumbEdit');
 });
 
 })(jQuery, Drupal);

@@ -204,7 +204,9 @@ global $user;
   $sub_menu = '';
   $output='';
   $print_link=TRUE;
-    
+  $divider="";    
+  $link_depth=$element['#original_link']['depth'];    
+  
     
   if ($element['#below']) {
     // Prevent dropdown functions from being added to management menu so it
@@ -216,7 +218,7 @@ global $user;
       // Add our own wrapper
       unset($element['#below']['#theme_wrappers']);
       
-      $sub_menu = '<ul class="dropdown-menu">' . drupal_render($element['#below']) . '</ul>';
+      $sub_menu = '<ul class="dropdown-menu dropdown-menu-large row"><li class="col-md-6"><ul>' . drupal_render($element['#below']) . '</li></ul></ul>';
       // Generate as standard dropdown.
       $element['#title'] .= ' <span class="caret"></span>';
       $element['#attributes']['class'][] = 'dropdown dropdown-large';
@@ -229,14 +231,25 @@ global $user;
       $element['#localized_options']['attributes']['data-toggle'] = 'dropdown';
     } 
     //SECOND LEVEL START
-    elseif ((!empty($element['#original_link']['depth'])) && $element['#original_link']['depth']==2 && $element['#original_link']['menu_name'] =='main-menu') {
+    elseif ((!empty($element['#original_link']['depth'])) && $element['#original_link']['depth']>=2 && $element['#original_link']['menu_name'] =='main-menu') {
       // Add our own wrapper.
       unset($element['#below']['#theme_wrappers']);
+      //$sub_menu = drupal_render($element['#below']);
       
-      $sub_menu = '<ul class="dropdown-menu">' . drupal_render($element['#below']) . '</ul>';
+      /*if($element['#original_link']['mlid']==573){
+        $sub_menu = '</li></ul><li class="col-md-6"><ul>'.drupal_render($element['#below']);
+      }else{
+          $sub_menu = drupal_render($element['#below']);
+      }*/
+      //$sub_menu = '<ul class="dropdown-menu ">' . drupal_render($element['#below']) . '</ul>';
+      $sub_menu = drupal_render($element['#below']);    
       // Generate as standard dropdown.
-      $element['#title'] .= ' <span class="caret"></span>';
-      $element['#attributes']['class'][] = 'dropdown';
+      //$element['#title'] .= ' <span class="caret"></span>';
+      $element['#attributes']['class'][] = 'dropdown-header';
+      if($link_depth>=3){
+        $element['#attributes']['class'][] = 'dropdown-header-small-'.$link_depth;
+      }
+          
       $element['#localized_options']['html'] = TRUE;
     
       // Set dropdown trigger element to # to prevent inadvertant page loading
@@ -253,8 +266,14 @@ global $user;
   if (($element['#href'] == $_GET['q'] || ($element['#href'] == '<front>' && drupal_is_front_page())) && (empty($element['#localized_options']['language'])) && $element['#original_link']['menu_name'] =='menu-podsajtovi') {
     $element['#attributes']['class'][] = 'active';
   }    
-  
-      $output = l($element['#title'], $element['#href'], $element['#localized_options']); 
+    if(in_array('dropdown-header',$element['#attributes']['class']) && $element['#original_link']['menu_name'] =='main-menu'){
+        $output=$element['#title'];
+        $divider=$element['#original_link']['depth']>2 ? '':'<li class="divider"></li>';
+        $divider.=$element['#original_link']['mlid']==578 ? '</ul><li class="col-md-6"><ul>':'';
+    }else{
+        $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+    }
+     
   
 
   if($element['#original_link']['menu_name'] =='menu-brzi-meni' && $element['#href']=='user' && $user->uid==0){
@@ -323,7 +342,7 @@ global $user;
      return '<li' . drupal_attributes($element['#attributes']) . '>' . $output  . "</li>\n". $sub_menu;
   }     
 
-  return $print_link ? '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n":'';
+  return $print_link ? $divider.'<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n":'';
 }
 
 /**

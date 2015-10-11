@@ -333,3 +333,5 @@ footer a,footer a:hover{color: #FFF; text-decoration: none; cursor: pointer;}
 #bottom-navbar-collapse{padding-bottom: 1em; padding-top: 0em !important;}
 #bottom-navbar-collapse .navbar-nav{margin-top:0em;}
 #bottom-navbar-collapse li{border-bottom: 1px solid #fff;}
+/* icons */
+.fa-file-pdf-o{margin-right: 5px;}
