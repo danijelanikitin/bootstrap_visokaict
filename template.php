@@ -136,6 +136,8 @@ function bootstrap_visokaict_preprocess_page(&$vars) {
       );
      $vars['bn_english_link']=l($link_bn_english_link_html,'http://en.ict.edu.rs',$link_bn_english_link_attr);
      $vars['content_column_class']=' class="col-xs-12 col-sm-12 col-md-9"';
+    
+    
 }
 /**
 * Overide hook_form_FORM_ID_alter
@@ -247,7 +249,7 @@ global $user;
       //$element['#title'] .= ' <span class="caret"></span>';
       $element['#attributes']['class'][] = 'dropdown-header';
       if($link_depth>=3){
-        $element['#attributes']['class'][] = 'dropdown-header-small-'.$link_depth;
+        $element['#attributes']['class'][] = 'dropdown-header-small';
       }
           
       $element['#localized_options']['html'] = TRUE;
@@ -257,9 +259,12 @@ global $user;
       $element['#localized_options']['attributes']['data-target'] = '#';
       $element['#localized_options']['attributes']['class'][] = 'dropdown-toggle';
       $element['#localized_options']['attributes']['data-toggle'] = 'dropdown';
+       
         
     } //SECOND LEVEL END  
   }
+      
+         
   // On primary navigation menu, class 'active' is not set on active menu item.
   // @see https://drupal.org/node/1896674
 
@@ -269,11 +274,16 @@ global $user;
     if(in_array('dropdown-header',$element['#attributes']['class']) && $element['#original_link']['menu_name'] =='main-menu'){
         $output=$element['#title'];
         $divider=$element['#original_link']['depth']>2 ? '':'<li class="divider"></li>';
-        $divider.=$element['#original_link']['mlid']==578 ? '</ul><li class="col-md-6"><ul>':'';
+        //$divider.=$element['#original_link']['mlid']==578 ? '</ul><li class="col-md-6"><ul>':'';
+        
     }else{
         $output = l($element['#title'], $element['#href'], $element['#localized_options']);
     }
-     
+   
+  if($element['#href']=='<separator>'){
+      $divider.='</ul><li class="col-md-6 new-column"><ul>';
+      $element['#attributes']['class'][] = 'hide';
+  }
   
 
   if($element['#original_link']['menu_name'] =='menu-brzi-meni' && $element['#href']=='user' && $user->uid==0){
